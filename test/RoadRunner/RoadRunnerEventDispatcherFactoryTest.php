@@ -88,7 +88,7 @@ class RoadRunnerEventDispatcherFactoryTest extends TestCase
         EnabledListenerCheckerInterface|null $listenerChecker = null,
         bool $hasRequestIdProvider = false,
     ): ContainerInterface {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = $this->createStub(ContainerInterface::class);
         $getServiceReturnMap = [
             ['config', [
                 'events' => [
@@ -98,7 +98,7 @@ class RoadRunnerEventDispatcherFactoryTest extends TestCase
                     ],
                 ],
             ]],
-            [Jobs::class, $this->createMock(JobsInterface::class)],
+            [Jobs::class, $this->createStub(JobsInterface::class)],
         ];
         $hasServiceReturnMap = [
             [RequestIdProviderInterface::class, $hasRequestIdProvider],
@@ -112,7 +112,7 @@ class RoadRunnerEventDispatcherFactoryTest extends TestCase
         if ($hasRequestIdProvider) {
             $getServiceReturnMap[] = [
                 RequestIdProviderInterface::class,
-                $this->createMock(RequestIdProviderInterface::class),
+                $this->createStub(RequestIdProviderInterface::class),
             ];
         }
 

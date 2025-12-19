@@ -44,7 +44,7 @@ class RoadRunnerTaskListenerTest extends TestCase
     public function expectedTaskIsDispatchedBasedOnProvidedEvent(object $event, array $expectedPayload): void
     {
         $queue = $this->createMock(QueueInterface::class);
-        $task = $this->createMock(PreparedTaskInterface::class);
+        $task = $this->createStub(PreparedTaskInterface::class);
 
         $this->jobs->expects($this->once())->method('connect')->with('shlink')->willReturn($queue);
         $queue->expects($this->once())->method('create')->with($event::class, json_encode([
@@ -53,7 +53,7 @@ class RoadRunnerTaskListenerTest extends TestCase
             'requestId' => '-',
         ]))->willReturn($task);
         $queue->expects($this->once())->method('dispatch')->with($task)->willReturn(
-            $this->createMock(QueuedTaskInterface::class),
+            $this->createStub(QueuedTaskInterface::class),
         );
 
         ($this->listener)($event);
