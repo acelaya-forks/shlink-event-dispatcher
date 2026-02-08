@@ -136,7 +136,6 @@ class SyncEventDispatcherFactoryTest extends TestCase
     {
         $ref = new ReflectionObject($dispatcher);
         $prop = $ref->getProperty('listenerProvider');
-        $prop->setAccessible(true);
 
         return $prop->getValue($dispatcher);
     }

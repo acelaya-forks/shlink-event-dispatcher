@@ -79,7 +79,6 @@ class RoadRunnerEventDispatcherFactoryTest extends TestCase
     {
         $ref = new ReflectionObject($object);
         $prop = $ref->getProperty($propName);
-        $prop->setAccessible(true);
 
         return $prop->getValue($object);
     }
