@@ -7,7 +7,6 @@ namespace Shlinkio\Shlink\EventDispatcher;
 use Psr\EventDispatcher as Psr;
 
 return [
-
     'events' => [
         'regular' => [],
         'async' => [],
@@ -23,5 +22,4 @@ return [
             Psr\EventDispatcherInterface::class => Dispatcher\EventDispatcherAggregate::class,
         ],
     ],
-
 ];

@@ -19,7 +19,7 @@ class EventDispatcherAggregateFactoryTest extends TestCase
 {
     private EventDispatcherAggregateFactory $factory;
     private EventDispatcherInterface $ed;
-    private MockObject & ContainerInterface $container;
+    private MockObject&ContainerInterface $container;
 
     public function setUp(): void
     {
@@ -31,11 +31,14 @@ class EventDispatcherAggregateFactoryTest extends TestCase
     #[Test, DataProvider('provideConfigs')]
     public function fetchesAsyncDispatcherFromContainer(array $config): void
     {
-        $this->container->expects($this->exactly(3))->method('get')->willReturnMap([
-            [RoadRunnerEventDispatcherFactory::ROAD_RUNNER_DISPATCHER, $this->ed],
-            [SyncEventDispatcherFactory::SYNC_DISPATCHER, $this->ed],
-            ['config', $config],
-        ]);
+        $this->container
+            ->expects($this->exactly(3))
+            ->method('get')
+            ->willReturnMap([
+                [RoadRunnerEventDispatcherFactory::ROAD_RUNNER_DISPATCHER, $this->ed],
+                [SyncEventDispatcherFactory::SYNC_DISPATCHER, $this->ed],
+                ['config', $config],
+            ]);
 
         ($this->factory)($this->container);
     }

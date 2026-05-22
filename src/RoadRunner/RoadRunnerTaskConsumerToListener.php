@@ -35,7 +35,7 @@ readonly class RoadRunnerTaskConsumerToListener
         while ($task = $this->consumer->waitTask()) {
             try {
                 $event = $task->getName();
-                if (! is_subclass_of($event, JsonUnserializable::class)) {
+                if (!is_subclass_of($event, JsonUnserializable::class)) {
                     $this->logger->warning(
                         'It was not possible to process task for event "{event}", because it does not '
                         . 'implement {implements}',

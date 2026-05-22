@@ -89,14 +89,17 @@ class RoadRunnerEventDispatcherFactoryTest extends TestCase
     ): ContainerInterface {
         $container = $this->createStub(ContainerInterface::class);
         $getServiceReturnMap = [
-            ['config', [
-                'events' => [
-                    'async' => [
-                        stdClass::class => ['bar', 'baz'],
-                        EventDispatcher::class => ['foo'],
+            [
+                'config',
+                [
+                    'events' => [
+                        'async' => [
+                            stdClass::class => ['bar', 'baz'],
+                            EventDispatcher::class => ['foo'],
+                        ],
                     ],
                 ],
-            ]],
+            ],
             [Jobs::class, $this->createStub(JobsInterface::class)],
         ];
         $hasServiceReturnMap = [

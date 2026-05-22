@@ -22,7 +22,7 @@ use function Shlinkio\Shlink\Json\json_encode;
 class RoadRunnerTaskListenerTest extends TestCase
 {
     private RoadRunnerTaskListener $listener;
-    private MockObject & JobsInterface $jobs;
+    private MockObject&JobsInterface $jobs;
     private string $listenerServiceName = 'service';
 
     public function setUp(): void
@@ -47,14 +47,22 @@ class RoadRunnerTaskListenerTest extends TestCase
         $task = $this->createStub(PreparedTaskInterface::class);
 
         $this->jobs->expects($this->once())->method('connect')->with('shlink')->willReturn($queue);
-        $queue->expects($this->once())->method('create')->with($event::class, json_encode([
-            'listenerServiceName' => $this->listenerServiceName,
-            'eventPayload' => $expectedPayload,
-            'requestId' => '-',
-        ]))->willReturn($task);
-        $queue->expects($this->once())->method('dispatch')->with($task)->willReturn(
-            $this->createStub(QueuedTaskInterface::class),
-        );
+        $queue
+            ->expects($this->once())
+            ->method('create')
+            ->with($event::class, json_encode([
+                'listenerServiceName' => $this->listenerServiceName,
+                'eventPayload' => $expectedPayload,
+                'requestId' => '-',
+            ]))
+            ->willReturn($task);
+        $queue
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($task)
+            ->willReturn(
+                $this->createStub(QueuedTaskInterface::class),
+            );
 
         ($this->listener)($event);
     }

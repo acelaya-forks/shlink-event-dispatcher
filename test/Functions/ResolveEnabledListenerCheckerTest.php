@@ -18,7 +18,7 @@ use function Shlinkio\Shlink\EventDispatcher\resolveEnabledListenerChecker;
 
 class ResolveEnabledListenerCheckerTest extends TestCase
 {
-    private MockObject & ContainerInterface $container;
+    private MockObject&ContainerInterface $container;
 
     protected function setUp(): void
     {
@@ -47,28 +47,54 @@ class ResolveEnabledListenerCheckerTest extends TestCase
             }
         };
 
-        yield 'no checker service' => [function (MockObject & ContainerInterface $container, TestCase $t): void {
-            $container->expects($t->once())->method('has')->with(EnabledListenerCheckerInterface::class)->willReturn(
-                false,
-            );
-            $container->expects($t->never())->method('get');
-        }, DummyEnabledListenerChecker::class];
-        yield 'invalid checker service' => [function (MockObject & ContainerInterface $container, TestCase $t): void {
-            $container->expects($t->once())->method('has')->with(EnabledListenerCheckerInterface::class)->willReturn(
-                true,
-            );
-            $container->expects($t->once())->method('get')->with(EnabledListenerCheckerInterface::class)->willReturn(
-                new stdClass(),
-            );
-        }, DummyEnabledListenerChecker::class];
+        yield 'no checker service' => [
+            static function (MockObject&ContainerInterface $container, TestCase $t): void {
+                $container
+                    ->expects($t->once())
+                    ->method('has')
+                    ->with(EnabledListenerCheckerInterface::class)
+                    ->willReturn(
+                        false,
+                    );
+                $container->expects($t->never())->method('get');
+            },
+            DummyEnabledListenerChecker::class,
+        ];
+        yield 'invalid checker service' => [
+            static function (MockObject&ContainerInterface $container, TestCase $t): void {
+                $container
+                    ->expects($t->once())
+                    ->method('has')
+                    ->with(EnabledListenerCheckerInterface::class)
+                    ->willReturn(
+                        true,
+                    );
+                $container
+                    ->expects($t->once())
+                    ->method('get')
+                    ->with(EnabledListenerCheckerInterface::class)
+                    ->willReturn(
+                        new stdClass(),
+                    );
+            },
+            DummyEnabledListenerChecker::class,
+        ];
         yield 'valid checker service' => [
-            function (MockObject & ContainerInterface $container, TestCase $t) use ($validChecker): void {
-                $container->expects($t->once())->method('has')->with(
-                    EnabledListenerCheckerInterface::class,
-                )->willReturn(true);
-                $container->expects($t->once())->method('get')->with(
-                    EnabledListenerCheckerInterface::class,
-                )->willReturn($validChecker);
+            static function (MockObject&ContainerInterface $container, TestCase $t) use ($validChecker): void {
+                $container
+                    ->expects($t->once())
+                    ->method('has')
+                    ->with(
+                        EnabledListenerCheckerInterface::class,
+                    )
+                    ->willReturn(true);
+                $container
+                    ->expects($t->once())
+                    ->method('get')
+                    ->with(
+                        EnabledListenerCheckerInterface::class,
+                    )
+                    ->willReturn($validChecker);
             },
             get_class($validChecker),
         ];

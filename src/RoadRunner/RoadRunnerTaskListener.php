@@ -18,8 +18,7 @@ readonly class RoadRunnerTaskListener
         private JobsInterface $jobs,
         private string $listenerServiceName,
         private RequestIdProviderInterface $requestIdProvider,
-    ) {
-    }
+    ) {}
 
     public function __invoke(object $event): void
     {

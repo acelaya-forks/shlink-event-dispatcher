@@ -51,7 +51,7 @@ class RoadRunnerEventDispatcherFactory
 
         foreach ($events as $eventName => $listeners) {
             foreach ($listeners as $listener) {
-                if (! $checker->shouldRegisterListener($eventName, $listener, true)) {
+                if (!$checker->shouldRegisterListener($eventName, $listener, true)) {
                     continue;
                 }
 

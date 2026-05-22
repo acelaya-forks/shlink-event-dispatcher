@@ -15,18 +15,17 @@ use Spiral\RoadRunner\Worker;
 use Spiral\RoadRunner\WorkerInterface;
 
 return [
-
     'dependencies' => [
         'factories' => [
             RoadRunnerEventDispatcherFactory::ROAD_RUNNER_DISPATCHER => RoadRunnerEventDispatcherFactory::class,
-            RoadRunnerTaskConsumerToListener::class => static fn (ContainerInterface $c)
-                => new RoadRunnerTaskConsumerToListener(
+            RoadRunnerTaskConsumerToListener::class =>
+                static fn (ContainerInterface $c) => new RoadRunnerTaskConsumerToListener(
                     $c->get(Consumer::class),
                     $c,
                     $c->get(LoggerInterface::class),
                 ),
 
-            Environment::class => static fn () => Environment::fromGlobals(),
+            Environment::class => Environment::fromGlobals(...),
 
             Jobs::class => ConfigAbstractFactory::class,
             RPC::class => static fn (ContainerInterface $c) => RPC::create(
@@ -47,5 +46,4 @@ return [
         Jobs::class => [RPC::class],
         Consumer::class => [Worker::class],
     ],
-
 ];
