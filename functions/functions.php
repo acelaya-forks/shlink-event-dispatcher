@@ -25,7 +25,7 @@ function roadRunnerTaskListener(
 
 function resolveEnabledListenerChecker(ContainerInterface $container): EnabledListenerCheckerInterface
 {
-    if (! $container->has(EnabledListenerCheckerInterface::class)) {
+    if (!$container->has(EnabledListenerCheckerInterface::class)) {
         return new DummyEnabledListenerChecker();
     }
 

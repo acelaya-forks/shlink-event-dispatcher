@@ -22,9 +22,9 @@ use function Shlinkio\Shlink\Json\json_encode;
 class RoadRunnerTaskConsumerToListenerTest extends TestCase
 {
     private RoadRunnerTaskConsumerToListener $taskConsumer;
-    private MockObject & ConsumerInterface $consumer;
-    private MockObject & ContainerInterface $container;
-    private MockObject & LoggerInterface $logger;
+    private MockObject&ConsumerInterface $consumer;
+    private MockObject&ContainerInterface $container;
+    private MockObject&LoggerInterface $logger;
 
     public function setUp(): void
     {
@@ -43,17 +43,23 @@ class RoadRunnerTaskConsumerToListenerTest extends TestCase
         $task->method('getName')->willReturn('not_deserializable');
         $task->expects($this->once())->method('ack');
         $task->expects($this->never())->method('nack');
-        $this->consumer->expects($this->exactly(2))->method('waitTask')->willReturnCallback(
-            function () use (&$callCount, $task) {
-                $callCount++;
-                return $callCount === 1 ? $task : null;
-            },
-        );
+        $this->consumer
+            ->expects($this->exactly(2))
+            ->method('waitTask')
+            ->willReturnCallback(
+                static function () use (&$callCount, $task) {
+                    $callCount++;
+                    return $callCount === 1 ? $task : null;
+                },
+            );
         $this->container->expects($this->never())->method('get');
-        $this->logger->expects($this->once())->method('warning')->with(
-            'It was not possible to process task for event "{event}", because it does not implement {implements}',
-            ['event' => 'not_deserializable', 'implements' => JsonUnserializable::class],
-        );
+        $this->logger
+            ->expects($this->once())
+            ->method('warning')
+            ->with(
+                'It was not possible to process task for event "{event}", because it does not implement {implements}',
+                ['event' => 'not_deserializable', 'implements' => JsonUnserializable::class],
+            );
 
         $this->taskConsumer->listenForTasks();
     }
@@ -74,18 +80,24 @@ class RoadRunnerTaskConsumerToListenerTest extends TestCase
         ]));
         $task->expects($this->once())->method('ack');
         $task->expects($this->never())->method('nack');
-        $this->consumer->expects($this->exactly(2))->method('waitTask')->willReturnCallback(
-            function () use (&$callCount, $task) {
-                $callCount++;
-                return $callCount === 1 ? $task : null;
-            },
-        );
-        $this->container->expects($this->once())->method('get')->with('my_listener')->willReturn(function (): void {
-        });
+        $this->consumer
+            ->expects($this->exactly(2))
+            ->method('waitTask')
+            ->willReturnCallback(
+                static function () use (&$callCount, $task) {
+                    $callCount++;
+                    return $callCount === 1 ? $task : null;
+                },
+            );
+        $this->container
+            ->expects($this->once())
+            ->method('get')
+            ->with('my_listener')
+            ->willReturn(static function (): void {});
         $this->logger->expects($this->never())->method('warning');
 
         $providedRequestId = null;
-        $this->taskConsumer->listenForTasks(function (string $id) use (&$providedRequestId): void {
+        $this->taskConsumer->listenForTasks(static function (string $id) use (&$providedRequestId): void {
             $providedRequestId = $id;
         });
 
@@ -105,15 +117,22 @@ class RoadRunnerTaskConsumerToListenerTest extends TestCase
         ]));
         $task->expects($this->never())->method('ack');
         $task->expects($this->once())->method('nack')->with($this->isInstanceOf(RuntimeException::class));
-        $this->consumer->expects($this->exactly(2))->method('waitTask')->willReturnCallback(
-            function () use (&$callCount, $task) {
-                $callCount++;
-                return $callCount === 1 ? $task : null;
-            },
-        );
-        $this->container->expects($this->once())->method('get')->with('my_listener')->willReturn(function (): void {
-            throw new RuntimeException('error');
-        });
+        $this->consumer
+            ->expects($this->exactly(2))
+            ->method('waitTask')
+            ->willReturnCallback(
+                static function () use (&$callCount, $task) {
+                    $callCount++;
+                    return $callCount === 1 ? $task : null;
+                },
+            );
+        $this->container
+            ->expects($this->once())
+            ->method('get')
+            ->with('my_listener')
+            ->willReturn(static function (): void {
+                throw new RuntimeException('error');
+            });
         $this->logger->expects($this->never())->method('warning');
 
         $this->taskConsumer->listenForTasks();

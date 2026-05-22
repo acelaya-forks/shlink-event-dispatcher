@@ -14,8 +14,8 @@ use stdClass;
 
 class EventDispatcherAggregateTest extends TestCase
 {
-    private MockObject & EventDispatcherInterface $asyncDispatcher;
-    private MockObject & EventDispatcherInterface $regularDispatcher;
+    private MockObject&EventDispatcherInterface $asyncDispatcher;
+    private MockObject&EventDispatcherInterface $regularDispatcher;
 
     public function setUp(): void
     {
@@ -27,12 +27,20 @@ class EventDispatcherAggregateTest extends TestCase
     public function expectedDispatcherIsInvoked(array $eventsConfig, int $asyncCalls, int $regularCalls): void
     {
         $event = new stdClass();
-        $this->asyncDispatcher->expects($this->exactly($asyncCalls))->method('dispatch')->with($event)->willReturn(
-            $event,
-        );
-        $this->regularDispatcher->expects($this->exactly($regularCalls))->method('dispatch')->with($event)->willReturn(
-            $event,
-        );
+        $this->asyncDispatcher
+            ->expects($this->exactly($asyncCalls))
+            ->method('dispatch')
+            ->with($event)
+            ->willReturn(
+                $event,
+            );
+        $this->regularDispatcher
+            ->expects($this->exactly($regularCalls))
+            ->method('dispatch')
+            ->with($event)
+            ->willReturn(
+                $event,
+            );
         $dispatcher = new EventDispatcherAggregate(
             $this->asyncDispatcher,
             $this->regularDispatcher,
@@ -46,16 +54,20 @@ class EventDispatcherAggregateTest extends TestCase
     {
         yield 'no events' => [[], 0, 0];
         yield 'async events' => [
-            ['async' => [
-                stdClass::class => [],
-            ]],
+            [
+                'async' => [
+                    stdClass::class => [],
+                ],
+            ],
             1,
             0,
         ];
         yield 'regular events' => [
-            ['regular' => [
-                stdClass::class => [],
-            ]],
+            [
+                'regular' => [
+                    stdClass::class => [],
+                ],
+            ],
             0,
             1,
         ];

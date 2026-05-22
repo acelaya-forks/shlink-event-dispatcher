@@ -20,7 +20,7 @@ use stdClass;
 class SyncEventDispatcherFactoryTest extends TestCase
 {
     private SyncEventDispatcherFactory $factory;
-    private MockObject & ContainerInterface $container;
+    private MockObject&ContainerInterface $container;
 
     public function setUp(): void
     {
@@ -54,47 +54,53 @@ class SyncEventDispatcherFactoryTest extends TestCase
             },
         ];
         yield 'empty regular events' => [
-            ['events' => [
-                'async' => [
-                    stdClass::class => [
-                        'foo',
-                        'bar',
+            [
+                'events' => [
+                    'async' => [
+                        stdClass::class => [
+                            'foo',
+                            'bar',
+                        ],
                     ],
                 ],
-            ]],
+            ],
             static function (ListenerProviderInterface $provider): void {
                 Assert::assertEmpty([...$provider->getListenersForEvent(new stdClass())]);
             },
         ];
         yield 'non-empty regular events' => [
-            ['events' => [
-                'regular' => [
-                    stdClass::class => [
-                        'foo',
-                        'bar',
+            [
+                'events' => [
+                    'regular' => [
+                        stdClass::class => [
+                            'foo',
+                            'bar',
+                        ],
                     ],
                 ],
-            ]],
+            ],
             static function (ListenerProviderInterface $provider): void {
                 Assert::assertCount(2, [...$provider->getListenersForEvent(new stdClass())]);
             },
         ];
         yield 'non-empty regular events and async' => [
-            ['events' => [
-                'regular' => [
-                    stdClass::class => [
-                        'foo',
-                        'bar',
+            [
+                'events' => [
+                    'regular' => [
+                        stdClass::class => [
+                            'foo',
+                            'bar',
+                        ],
+                    ],
+                    'async' => [
+                        EventDispatcher::class => [
+                            'foo',
+                            'bar',
+                            'baz',
+                        ],
                     ],
                 ],
-                'async' => [
-                    EventDispatcher::class => [
-                        'foo',
-                        'bar',
-                        'baz',
-                    ],
-                ],
-            ]],
+            ],
             static function (ListenerProviderInterface $provider): void {
                 Assert::assertCount(2, [...$provider->getListenersForEvent(new stdClass())]);
                 Assert::assertEmpty([...$provider->getListenersForEvent(new EventDispatcher())]);
@@ -106,25 +112,34 @@ class SyncEventDispatcherFactoryTest extends TestCase
     public function skipsListenersWhenEnabledListenerCheckerIsRegistered(): void
     {
         $this->container->expects($this->once())->method('has')->willReturn(true);
-        $this->container->expects($this->exactly(2))->method('get')->willReturnMap([
-            ['config', [
-                'events' => [
-                    'regular' => [
-                        stdClass::class => [
-                            'foo',
-                            'bar',
-                            'foo2',
+        $this->container
+            ->expects($this->exactly(2))
+            ->method('get')
+            ->willReturnMap([
+                [
+                    'config',
+                    [
+                        'events' => [
+                            'regular' => [
+                                stdClass::class => [
+                                    'foo',
+                                    'bar',
+                                    'foo2',
+                                ],
+                            ],
                         ],
                     ],
                 ],
-            ]],
-            [EnabledListenerCheckerInterface::class, new class implements EnabledListenerCheckerInterface {
-                public function shouldRegisterListener(string $event, string $listener, bool $isAsync): bool
-                {
-                    return !$isAsync && $listener === 'foo';
-                }
-            }],
-        ]);
+                [
+                    EnabledListenerCheckerInterface::class,
+                    new class implements EnabledListenerCheckerInterface {
+                        public function shouldRegisterListener(string $event, string $listener, bool $isAsync): bool
+                        {
+                            return !$isAsync && $listener === 'foo';
+                        }
+                    },
+                ],
+            ]);
 
         $dispatcher = ($this->factory)($this->container);
         $provider = $this->resolveListenerProvider($dispatcher);

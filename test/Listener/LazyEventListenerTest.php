@@ -14,7 +14,7 @@ use stdClass;
 class LazyEventListenerTest extends TestCase
 {
     private LazyEventListener $listener;
-    private MockObject & ContainerInterface $container;
+    private MockObject&ContainerInterface $container;
     private string $listenerServiceName;
 
     public function setUp(): void
@@ -34,9 +34,13 @@ class LazyEventListenerTest extends TestCase
             $isCalled = true;
             $event = $actualEvent;
         };
-        $this->container->expects($this->once())->method('get')->with($this->listenerServiceName)->willReturn(
-            $actualListener,
-        );
+        $this->container
+            ->expects($this->once())
+            ->method('get')
+            ->with($this->listenerServiceName)
+            ->willReturn(
+                $actualListener,
+            );
         $passedEvent = new stdClass();
 
         ($this->listener)($passedEvent);
