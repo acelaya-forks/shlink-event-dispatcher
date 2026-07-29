@@ -8,7 +8,7 @@ extends = "vendor/shlinkio/shlink-mago-config/mago.toml"
 [source]
 workspace = "."
 paths = ["config", "functions", "src", "test"]
-excludes = ["vendor"]
+includes = ["vendor"]
 
 [source.glob]
 literal-separator = true
@@ -17,3 +17,10 @@ literal-separator = true
 no-literal-password = { exclude = ["test"] }
 no-empty-catch-clause = { exclude = ["test"] }
 no-empty-loop = { exclude = ["test"] }
+
+[analyzer]
+ignore = [
+    { code = "mixed-assignment", in = "test/" },
+    { code = "mixed-argument", in = "test/" },
+    { code = "invalid-array-element", in = "test/**/*EventDispatcherFactoryTest.php" },
+]

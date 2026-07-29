@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 use ReflectionObject;
 use Shlinkio\Shlink\EventDispatcher\Listener\EnabledListenerCheckerInterface;
 use Shlinkio\Shlink\EventDispatcher\RoadRunner\RoadRunnerEventDispatcherFactory;
@@ -69,6 +70,7 @@ class RoadRunnerEventDispatcherFactoryTest extends TestCase
         }, hasRequestIdProvider: $hasRequestIdProvider);
 
         $dispatcher = ($this->factory)($container);
+        /** @var ListenerProviderInterface $listenerProvider */
         $listenerProvider = $this->getPrivateProp($dispatcher, 'listenerProvider');
 
         Assert::assertCount(0, [...$listenerProvider->getListenersForEvent(new stdClass())]);

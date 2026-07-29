@@ -12,6 +12,8 @@ readonly class LazyEventListener
 
     public function __invoke(object $event): void
     {
-        $this->container->get($this->listenerServiceName)($event);
+        /** @var callable(object): void $eventListener */
+        $eventListener = $this->container->get($this->listenerServiceName);
+        $eventListener($event);
     }
 }

@@ -24,6 +24,8 @@ readonly class RoadRunnerTaskConsumerToListener
         private ContainerInterface $container,
         private LoggerInterface $logger,
     ) {
+        // @mago-expect analysis:mixed-property-type-coercion - If this ends up not being a bool, it will fail at
+        //                                                      runtime, which is enough
         $this->gcCollectCycles = env('GC_COLLECT_CYCLES', default: false);
     }
 
@@ -45,6 +47,9 @@ readonly class RoadRunnerTaskConsumerToListener
                     continue;
                 }
 
+                /** @var string $listenerService */
+                /** @var array $payload */
+                /** @var string $requestId */
                 [
                     'listenerServiceName' => $listenerService,
                     'eventPayload' => $payload,
@@ -54,7 +59,9 @@ readonly class RoadRunnerTaskConsumerToListener
                     $setCurrentRequestId($requestId);
                 }
 
-                $this->container->get($listenerService)($event::fromPayload($payload));
+                /** @var callable(object): void $listener */
+                $listener = $this->container->get($listenerService);
+                $listener($event::fromPayload($payload));
                 $task->ack();
             } catch (Throwable $e) {
                 $task->nack($e);

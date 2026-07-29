@@ -21,7 +21,10 @@ class RoadRunnerEventDispatcherFactory
     public function __invoke(ContainerInterface $container): EventDispatcher
     {
         $provider = new PrioritizedListenerRegistry();
+        /** @var array $eventsConfig */
         $eventsConfig = $container->get('config')['events'] ?? [];
+        /** @var array<string, string[]> $asyncEvents */
+        $asyncEvents = $eventsConfig['async'] ?? [];
         $requestIdProvider = $container->has(RequestIdProviderInterface::class)
             ? $container->get(RequestIdProviderInterface::class)
             : new class implements RequestIdProviderInterface {
@@ -31,11 +34,14 @@ class RoadRunnerEventDispatcherFactory
                 }
             };
 
-        $this->registerEvents($provider, $container, $requestIdProvider, $eventsConfig['async'] ?? []);
+        $this->registerEvents($provider, $container, $requestIdProvider, $asyncEvents);
 
         return new EventDispatcher($provider);
     }
 
+    /**
+     * @param array<string, string[]> $events
+     */
     private function registerEvents(
         PrioritizedListenerRegistry $provider,
         ContainerInterface $container,

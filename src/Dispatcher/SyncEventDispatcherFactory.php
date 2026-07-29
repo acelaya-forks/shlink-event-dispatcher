@@ -18,13 +18,19 @@ class SyncEventDispatcherFactory
     public function __invoke(ContainerInterface $container): EventDispatcher
     {
         $provider = new PrioritizedListenerRegistry();
+        /** @var array $eventsConfig */
         $eventsConfig = $container->get('config')['events'] ?? [];
+        /** @var array<string, string[]> $regularEvents */
+        $regularEvents = $eventsConfig['regular'] ?? [];
 
-        $this->registerEvents($provider, $container, $eventsConfig['regular'] ?? []);
+        $this->registerEvents($provider, $container, $regularEvents);
 
         return new EventDispatcher($provider);
     }
 
+    /**
+     * @param array<string, string[]> $events
+     */
     private function registerEvents(
         PrioritizedListenerRegistry $provider,
         ContainerInterface $container,
