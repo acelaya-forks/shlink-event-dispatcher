@@ -30,6 +30,7 @@ function resolveEnabledListenerChecker(ContainerInterface $container): EnabledLi
     }
 
     $checker = $container->get(EnabledListenerCheckerInterface::class);
+    // @mago-expect analysis:redundant-condition
     if ($checker instanceof EnabledListenerCheckerInterface) {
         return $checker;
     }

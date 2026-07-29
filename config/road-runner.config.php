@@ -29,6 +29,7 @@ return [
 
             Jobs::class => ConfigAbstractFactory::class,
             RPC::class => static fn (ContainerInterface $c) => RPC::create(
+                // @mago-expect analysis:possibly-invalid-argument
                 $c->get(Environment::class)->getRPCAddress(),
             ),
 

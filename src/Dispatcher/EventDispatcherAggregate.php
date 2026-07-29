@@ -11,7 +11,9 @@ use function in_array;
 
 class EventDispatcherAggregate implements EventDispatcherInterface
 {
+    /** @var list<array-key> */
     private array $asyncEvents;
+    /** @var list<array-key> */
     private array $regularEvents;
 
     public function __construct(
@@ -19,19 +21,24 @@ class EventDispatcherAggregate implements EventDispatcherInterface
         private readonly EventDispatcherInterface $regularDispatcher,
         array $eventsConfig,
     ) {
-        $this->asyncEvents = array_keys($eventsConfig['async'] ?? []);
-        $this->regularEvents = array_keys($eventsConfig['regular'] ?? []);
+        /** @var array<string, string[]> $asyncEvents */
+        $asyncEvents = $eventsConfig['async'] ?? [];
+        /** @var array<string, string[]> $regularEvents */
+        $regularEvents = $eventsConfig['regular'] ?? [];
+
+        $this->asyncEvents = array_keys($asyncEvents);
+        $this->regularEvents = array_keys($regularEvents);
     }
 
     public function dispatch(object $event): object
     {
         $initialEventClass = $event::class;
 
-        if (in_array($initialEventClass, $this->regularEvents, true)) {
+        if (in_array($initialEventClass, $this->regularEvents, strict: true)) {
             $event = $this->regularDispatcher->dispatch($event);
         }
 
-        if (in_array($initialEventClass, $this->asyncEvents, true)) {
+        if (in_array($initialEventClass, $this->asyncEvents, strict: true)) {
             $event = $this->asyncDispatcher->dispatch($event);
         }
 

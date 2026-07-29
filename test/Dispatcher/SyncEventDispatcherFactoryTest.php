@@ -152,6 +152,7 @@ class SyncEventDispatcherFactoryTest extends TestCase
         $ref = new ReflectionObject($dispatcher);
         $prop = $ref->getProperty('listenerProvider');
 
+        // @mago-expect analysis:mixed-return-statement
         return $prop->getValue($dispatcher);
     }
 }
